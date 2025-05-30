@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TcheKey</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  
+    <div class="sidebar">
+        <div class="user-info">
+          
+            <i class="fas fa-user-circle"></i>
+            
+            <span id="user-email"></span>
+             <button id="logout-btn" class="btn"><i class="fas fa-sign-out-alt"></i> Sair</button>
+
+        </div>
+       
+        <button id="create-folder" class="btn">
+            <i class="fas fa-plus"></i> Nova Pasta
+        </button>
+        <div id="folder-list" class="folder-list">
+            <!-- Pastas serão carregadas aqui -->
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <header>
+            <h1><i class="fas fa-lock"></i> TcheKey</h1>
+            
+        </header>
+        
+        <main>
+            <div id="password-form" class="card">
+                <h2><i class="fas fa-plus-circle"></i> Adicionar Nova Senha</h2>
+                <div class="form-group">
+                    <label for="servico"><i class="fas fa-globe"></i> Serviço/Aplicação:</label>
+                    <input type="text" id="servico" required>
+                </div>
+                <div class="form-group">
+                    <label for="usuario"><i class="fas fa-user"></i> Usuário/E-mail:</label>
+                    <input type="text" id="usuario" required>
+                </div>
+                <div class="form-group">
+                    <label for="senha"><i class="fas fa-key"></i> Senha:</label>
+                    <div class="password-input-container">
+                        <input type="password" id="senha" required>
+                        <button id="toggle-password"><i class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button id="adicionar" class="btn primary"><i class="fas fa-save"></i> Salvar</button>
+                    <button id="gerar" class="btn secondary"><i class="fas fa-random"></i> Gerar Senha</button>
+                </div>
+            </div>
+            
+            <div id="lista-senhas" class="card">
+                <h2><i class="fas fa-list"></i> Suas Senhas Salvas</h2>
+                <div id="passwords-container">
+                    <!-- As senhas serão carregadas aqui via JavaScript -->
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Modal para criar pasta -->
+    <div id="folder-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-folder-modal">&times;</span>
+            <h3><i class="fas fa-folder-plus"></i> Criar Nova Pasta</h3>
+            <div class="form-group">
+                <label for="folder-name">Nome da Pasta:</label>
+                <input type="text" id="folder-name" placeholder="Ex: Trabalho, Pessoal...">
+            </div>
+            <button id="save-folder" class="btn primary"><i class="fas fa-save"></i> Criar Pasta</button>
+        </div>
+    </div>
+    
+    <script src="/js/manager.js"></script>
+</body>
+</html>
