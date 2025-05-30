@@ -11,7 +11,11 @@ const app = express();
 const PORT = process.env.PORT || 10000;
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://tchekey.onrender.com'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 app.use(express.static('public'));
 
@@ -132,47 +136,60 @@ app.post('/api/auth/register', async (req, res) => {
   }
 });
 
-app.post('/api/auth/login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
+  console.log('Requisição de login recebida:', req.body); // Log para diagnóstico
+  
   try {
     const { email, password } = req.body;
 
+    // Validação robusta
     if (!email || !password) {
+      console.warn('Campos faltando:', { email, password });
       return res.status(400).json({ 
-        success: false, 
+        success: false,
         message: 'Email e senha são obrigatórios' 
       });
     }
 
     const user = await User.findOne({ email });
+    
     if (!user) {
-      return res.status(401).json({ 
-        success: false, 
-        message: 'Credenciais inválidas' 
+      console.warn('Usuário não encontrado:', email);
+      return res.status(401).json({
+        success: false,
+        message: 'Credenciais inválidas'
       });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
+    
     if (!isMatch) {
-      return res.status(401).json({ 
-        success: false, 
-        message: 'Credenciais inválidas' 
+      console.warn('Senha incorreta para:', email);
+      return res.status(401).json({
+        success: false,
+        message: 'Credenciais inválidas'
       });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { 
-      expiresIn: '8h' 
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: '8h'
     });
 
-    res.json({ 
+    console.log('Login bem-sucedido para:', email);
+    res.json({
       success: true,
       token,
-      user: { id: user._id, email: user.email }
+      user: {
+        id: user._id,
+        email: user.email
+      }
     });
+
   } catch (err) {
     console.error('Erro no login:', err);
-    res.status(500).json({ 
-      success: false, 
-      message: 'Erro ao fazer login' 
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno no servidor'
     });
   }
 });
@@ -438,12 +455,9 @@ app.get('/api/health', (req, res) => {
 });
 
 // Middleware de erro global
-app.use((err, req, res, next) => {
-  console.error('Erro não tratado:', err);
-  res.status(500).json({ 
-    success: false, 
-    message: 'Erro interno no servidor' 
-  });
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
 });
 
 // Inicia o servidor
